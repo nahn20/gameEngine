@@ -7,6 +7,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
     this.screenY = [0];
     this.dimensions = [1200, 600];
     this.following = 0;
+    this.bounce = false;
     if(options.sizeMultiplier){
         this.sizeMultiplier = options.sizeMultiplier;
     }
@@ -22,9 +23,12 @@ function cameraConstructor(number, x=[0], y=[0], options){
     if(options.following){
         this.following = options.following;
     }
+    if(options.bounce){
+        this.bounce = options.bounce; //0 = no bounce, 1 = velocity bounce, 2 = acceleration bounce, etc. -1 = all bounce
+    }
     this.loop = function(){
         this.updatePos();
-        this.boarder();
+        this.drawAll();
     }
     this.updatePos = function(){
         if(this.following-1 == -1){
@@ -39,6 +43,35 @@ function cameraConstructor(number, x=[0], y=[0], options){
             this.x[0] = player[this.following-1].x[0] - this.dimensions[0]/2;
             this.y[0] = player[this.following-1].y[0] - this.dimensions[1]/2;
         }
+        for(var i = 1; i < this.screenX.length; i++){
+            this.screenX[i-1] += this.screenX[i];
+        }
+        for(var i = 1; i < this.screenY.length; i++){
+            this.screenY[i-1] += this.screenY[i];
+        }
+        this.doBounce();
+    }
+    this.doBounce = function(){
+        if(this.bounce != 0){
+            if(this.screenX[0] + this.dimensions[0] > gameArea.dimensions[0] || this.screenX[0] <= 0){
+                var len = this.bounce;
+                if(this.bounce == -1){
+                    len = this.screenX.length-1;
+                }
+                for(var i = 1; i <= len; i++){
+                    this.screenX[i] = -this.screenX[i];
+                }
+            }
+            if(this.screenY[0] + this.dimensions[1] > gameArea.dimensions[1] || this.screenY[0] <= 0){
+                var len = this.bounce;
+                if(this.bounce == -1){
+                    len = this.screenY.length-1;
+                }
+                for(var i = 1; i <= len; i++){
+                    this.screenY[i] = -this.screenY[i];
+                }
+            }
+        }
     }
     this.onScreen = function(x, y, width, height){
         if(x + width > this.x[0] && x < this.x[0] + this.dimensions[0]/this.sizeMultiplier
@@ -47,21 +80,67 @@ function cameraConstructor(number, x=[0], y=[0], options){
         }
         return false;
     }
+    this.drawAll = function(){
+        this.boarder();
+        this.drawRects();
+        this.drawCircles();
+        if(this.number != camera.length){
+            for(var i = this.number+1; i < camera.length; i++){
+                gameArea.ctx.clearRect(camera[i].screenX[0], camera[i].screenY[0], camera[i].dimensions[0], camera[i].dimensions[1])
+            }
+        }
+    }
     this.boarder = function(){
         this.overlayRect(0, 0, this.dimensions[0], this.dimensions[1], {color: "black", fill: false})
     }
-    this.drawCirc = function(x, y, radius, color="black"){
-        if(this.onScreen(x-radius, y-radius, radius*2, radius*2)){
-            gameArea.ctx.save();
-                gameArea.ctx.beginPath();
-                gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
-                gameArea.ctx.clip();
+    this.drawRects = function(){
+        len = toDraw.length;
+        for(var i = 0; i < len; i++){
+            var obj = toDraw[i];
+            var color = "black";
+            var fill = false;
+            if(obj.color){
+                color = obj.color;
+            }
+            if(obj.fill){
+                fill = obj.fill;
+            }
+            if(this.onScreen(obj.x[0], obj.y[0], obj.dimensions[0], obj.dimensions[1])){
+                gameArea.ctx.save();
+                    gameArea.ctx.beginPath();
+                    gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
+                    gameArea.ctx.clip();
 
-                gameArea.ctx.beginPath();
-                gameArea.ctx.fillStyle=color;
-                gameArea.ctx.arc(this.screenX[0]+this.sizeMultiplier*(x - this.x[0]), this.screenY[0]+this.sizeMultiplier*(y - this.y[0]), this.sizeMultiplier*radius, 0, 2*Math.PI);
-                gameArea.ctx.fill();
-            gameArea.ctx.restore();
+                    gameArea.ctx.beginPath();
+                    if(fill == true){
+                        gameArea.ctx.fillStyle = color;
+                        gameArea.ctx.fillRect(this.screenX[0]+this.sizeMultiplier*(obj.x[0]-this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y[0]-this.y[0]), this.sizeMultiplier*obj.dimensions[0], this.sizeMultiplier*obj.dimensions[1], color);
+                    }
+                    else{
+                        gameArea.ctx.strokeStyle = color;
+                        gameArea.ctx.rect(this.screenX[0]+this.sizeMultiplier*(obj.x[0]-this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y[0]-this.y[0]), this.sizeMultiplier*obj.dimensions[0], this.sizeMultiplier*obj.dimensions[1], color);
+                        gameArea.ctx.stroke();
+                    }
+                gameArea.ctx.restore();
+            }
+        }
+    }
+    this.drawCircles = function(){
+        len = toDraw.length;
+        for(var i = 0; i < len; i++){
+            var obj = toDraw[i];
+            if(this.onScreen(obj.x-obj.radius, obj.y-obj.radius, obj.radius*2, obj.radius*2)){
+                gameArea.ctx.save();
+                    gameArea.ctx.beginPath();
+                    gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
+                    gameArea.ctx.clip();
+
+                    gameArea.ctx.beginPath();
+                    gameArea.ctx.fillStyle=color;
+                    gameArea.ctx.arc(this.screenX[0]+this.sizeMultiplier*(obj.x - this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y - this.y[0]), this.sizeMultiplier*obj.radius, 0, 2*Math.PI);
+                    gameArea.ctx.fill();
+                gameArea.ctx.restore();
+            }
         }
     }
     this.drawLine = function(startx, starty, endx, endy, color="black"){
@@ -89,34 +168,6 @@ function cameraConstructor(number, x=[0], y=[0], options){
             gameArea.ctx.textAlign = textAlign;
             gameArea.ctx.fillText(text, this.screenX[0]+this.sizeMultiplier*(x - this.x[0]), this.screenY[0]+this.sizeMultiplier*(y - this.y[0])); 
         gameArea.ctx.restore();
-    }
-    this.drawRect = function(x, y, width, height, options){
-        color = "black";
-        fill = false;
-        if(options.color){
-            color = options.color;
-        }
-        if(options.fill){
-            fill = options.fill;
-        }
-        if(this.onScreen(x, y, width, height)){
-            gameArea.ctx.save();
-                gameArea.ctx.beginPath();
-                gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
-                gameArea.ctx.clip();
-
-                gameArea.ctx.beginPath();
-                if(fill == true){
-                    gameArea.ctx.fillStyle = color;
-                    gameArea.ctx.fillRect(this.screenX[0]+this.sizeMultiplier*(x-this.x[0]), this.screenY[0]+this.sizeMultiplier*(y-this.y[0]), this.sizeMultiplier*width, this.sizeMultiplier*height, color);
-                }
-                else{
-                    gameArea.ctx.strokeStyle = color;
-                    gameArea.ctx.rect(this.screenX[0]+this.sizeMultiplier*(x-this.x[0]), this.screenY[0]+this.sizeMultiplier*(y-this.y[0]), this.sizeMultiplier*width, this.sizeMultiplier*height, color);
-                    gameArea.ctx.stroke();
-                }
-            gameArea.ctx.restore();
-        }
     }
     this.overlayLine = function(startx, starty, endx, endy, color="black"){
         

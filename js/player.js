@@ -5,6 +5,7 @@ function playerConstructor(number, x=[0], y=[0], options){
     this.dimensions = [16, 32];
     this.controls = [87, 65, 83, 68];
     this.color = "black";
+    this.fill = true;
     if(options.dimensions){
         this.dimensions = options.dimensions;
     }
@@ -17,7 +18,7 @@ function playerConstructor(number, x=[0], y=[0], options){
     this.loop = function(){
         this.useKeyboard();
         this.updatePos();
-        this.draw();
+        toDraw.push(this);
     }
     this.useKeyboard = function(){
         if(keyMap[this.controls[0]]){
