@@ -6,7 +6,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
     this.screenX = [0];
     this.screenY = [0];
     this.dimensions = [1200, 600];
-    this.following = -1;
+    this.following = 0;
     if(options.sizeMultiplier){
         this.sizeMultiplier = options.sizeMultiplier;
     }
@@ -27,7 +27,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
         this.boarder();
     }
     this.updatePos = function(){
-        if(this.following == -1){
+        if(this.following-1 == -1){
             for(var i = 1; i < this.x.length; i++){
                 this.x[i-1] += this.x[i];
             }
@@ -36,8 +36,8 @@ function cameraConstructor(number, x=[0], y=[0], options){
             }
         }
         else{
-            this.x[0] = player[this.following].x[0] - this.dimensions[0]/2;
-            this.y[0] = player[this.following].y[0] - this.dimensions[1]/2;
+            this.x[0] = player[this.following-1].x[0] - this.dimensions[0]/2;
+            this.y[0] = player[this.following-1].y[0] - this.dimensions[1]/2;
         }
     }
     this.onScreen = function(x, y, width, height){
