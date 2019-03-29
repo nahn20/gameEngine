@@ -59,24 +59,24 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
         if(this.x[1] < -0.1){
             var eye = {x: this.x.slice(0), y: this.y.slice(0), radius: this.dimensions[0]/12, shape: "circle", fill: this.fill, color: "white"};
             eye.x[0] += 0.2*this.dimensions[0];
-            eye.y[0] += 0.38*this.dimensions[0]-0.1*this.dimensions[0]*(this.animationState % 2);
+            eye.y[0] += 0.38*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
             toDraw.push(eye);
         }
         if(this.x[1] > 0.1){
             var eye = {x: this.x.slice(0), y: this.y.slice(0), radius: this.dimensions[0]/12, shape: "circle", fill: this.fill, color: "white"};
             eye.x[0] += 0.8*this.dimensions[0];
-            eye.y[0] += 0.38*this.dimensions[0]-0.1*this.dimensions[0]*(this.animationState % 2);
+            eye.y[0] += 0.38*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
             toDraw.push(eye);
         }
         if(this.x[1] > -0.1 && this.x[1] < 0.1){
             var eye1 = {x: this.x.slice(0), y: this.y.slice(0), radius: this.dimensions[0]/12, shape: "circle", fill: this.fill, color: "white"};
             eye1.x[0] += 0.72*this.dimensions[0];
-            eye1.y[0] += 0.38*this.dimensions[0]-0.1*this.dimensions[0]*(this.animationState % 2);
+            eye1.y[0] += 0.38*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
             toDraw.push(eye1);
 
             var eye2 = {x: this.x.slice(0), y: this.y.slice(0), radius: this.dimensions[0]/12, shape: "circle", fill: this.fill, color: "white"};
             eye2.x[0] += 0.28*this.dimensions[0];
-            eye2.y[0] += 0.38*this.dimensions[0]-0.1*this.dimensions[0]*(this.animationState % 2);
+            eye2.y[0] += 0.38*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
             toDraw.push(eye2);
         }
         var body = {x: this.x, y: this.y.slice(0), dimensions: [this.dimensions[0], this.dimensions[1]-this.dimensions[0]], shape: "rectangle", fill: this.fill, color: this.color};

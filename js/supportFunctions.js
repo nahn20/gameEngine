@@ -93,7 +93,6 @@ function collisionCheck(entity){
                         }
                         if(entity.xComponents && obj.x[1] != 0){
                             entity.xComponents[2].push((obj.frictionCoefficient/10)*obj.x[1]); //Basically undoes friction
-                            console.log(entity.x[0]-obj.x[0])
                         }
                         entity.y = unDerivativeIncrement(entity.y);
                         entity.standingOnFriction.push(obj.frictionCoefficient);

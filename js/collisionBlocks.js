@@ -4,7 +4,8 @@ block[2] = new blockConstructor([380, -5], [32, 0], [70, 70], {color: "black"});
 block[3] = new blockConstructor([400, 0], [22, 0], [20, 80], {color: "black"});
 block[4] = new blockConstructor([-1000, 0], [300, 0], [2000, 1], {color: "black"});
 block[5] = new blockConstructor([0, 0], [-20, 0], [600, 1], {color: "black"});
-block[6] = new blockConstructor([100, -2], [200, 0], [600, 10], {color: "blue", frictionCoefficient: 0.1});
+block[6] = new blockConstructor([100, -3], [200, 0], [600, 10], {color: "blue", frictionCoefficient: 0.1});
+block[7] = new blockConstructor([-200, 0], [300, -2], [100, 1], {color: "black"});
 function blockConstructor(x=[0, 0], y=[0, 0], dimensions=[10, 10], options){
     this.x = x;
     this.y = y;
