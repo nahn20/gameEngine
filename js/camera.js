@@ -43,17 +43,13 @@ function cameraConstructor(number, x=[0], y=[0], options){
             this.x[0] = player[this.following-1].x[0] - this.dimensions[0]/2;
             this.y[0] = player[this.following-1].y[0] - this.dimensions[1]/2;
         }
-        for(var i = 1; i < this.screenX.length; i++){
-            this.screenX[i-1] += this.screenX[i];
-        }
-        for(var i = 1; i < this.screenY.length; i++){
-            this.screenY[i-1] += this.screenY[i];
-        }
+        this.screenX = derivativeIncrements(this.screenX);
+        this.screenY = derivativeIncrements(this.screenY);
         this.doBounce();
     }
     this.doBounce = function(){
         if(this.bounce != 0){
-            if(this.screenX[0] + this.dimensions[0] > gameArea.dimensions[0] || this.screenX[0] <= 0){
+            if(this.screenX[0] + this.dimensions[0] >= gameArea.dimensions[0] || this.screenX[0] <= 0){
                 var len = this.bounce;
                 if(this.bounce == -1){
                     len = this.screenX.length-1;
@@ -62,7 +58,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
                     this.screenX[i] = -this.screenX[i];
                 }
             }
-            if(this.screenY[0] + this.dimensions[1] > gameArea.dimensions[1] || this.screenY[0] <= 0){
+            if(this.screenY[0] + this.dimensions[1] >= gameArea.dimensions[1] || this.screenY[0] <= 0){
                 var len = this.bounce;
                 if(this.bounce == -1){
                     len = this.screenY.length-1;
@@ -81,22 +77,33 @@ function cameraConstructor(number, x=[0], y=[0], options){
         return false;
     }
     this.drawAll = function(){
+        len = toDraw.length;
+        for(var i = 0; i < len; i++){
+            var obj = toDraw[i];
+            switch(obj.shape){
+                case "rectangle":
+                    this.drawRects(obj);
+                    break;
+                case "circle":
+                    this.drawCircles(obj);
+                    break;
+                default:
+                    console.log("Error: toDraw[" + i + "] does not have a defined shape.");
+                    break;
+            }
+        }
         this.boarder();
-        this.drawRects();
-        this.drawCircles();
         if(this.number != camera.length){
             for(var i = this.number+1; i < camera.length; i++){
-                gameArea.ctx.clearRect(camera[i].screenX[0], camera[i].screenY[0], camera[i].dimensions[0], camera[i].dimensions[1])
+                gameArea.ctx.clearRect(camera[i].screenX[0], camera[i].screenY[0], camera[i].dimensions[0], camera[i].dimensions[1]);
             }
         }
     }
     this.boarder = function(){
         this.overlayRect(0, 0, this.dimensions[0], this.dimensions[1], {color: "black", fill: false})
     }
-    this.drawRects = function(){
-        len = toDraw.length;
-        for(var i = 0; i < len; i++){
-            var obj = toDraw[i];
+    this.drawRects = function(obj){
+        if(this.onScreen(obj.x[0], obj.y[0], obj.dimensions[0], obj.dimensions[1])){
             var color = "black";
             var fill = false;
             if(obj.color){
@@ -105,45 +112,42 @@ function cameraConstructor(number, x=[0], y=[0], options){
             if(obj.fill){
                 fill = obj.fill;
             }
-            if(this.onScreen(obj.x[0], obj.y[0], obj.dimensions[0], obj.dimensions[1])){
-                gameArea.ctx.save();
-                    gameArea.ctx.beginPath();
-                    gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
-                    gameArea.ctx.clip();
+            gameArea.ctx.save();
+                gameArea.ctx.beginPath();
+                gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
+                gameArea.ctx.clip();
 
-                    gameArea.ctx.beginPath();
-                    if(fill == true){
-                        gameArea.ctx.fillStyle = color;
-                        gameArea.ctx.fillRect(this.screenX[0]+this.sizeMultiplier*(obj.x[0]-this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y[0]-this.y[0]), this.sizeMultiplier*obj.dimensions[0], this.sizeMultiplier*obj.dimensions[1], color);
-                    }
-                    else{
-                        gameArea.ctx.strokeStyle = color;
-                        gameArea.ctx.rect(this.screenX[0]+this.sizeMultiplier*(obj.x[0]-this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y[0]-this.y[0]), this.sizeMultiplier*obj.dimensions[0], this.sizeMultiplier*obj.dimensions[1], color);
-                        gameArea.ctx.stroke();
-                    }
-                gameArea.ctx.restore();
-            }
+                gameArea.ctx.beginPath();
+                if(fill == true){
+                    gameArea.ctx.fillStyle = color;
+                    gameArea.ctx.fillRect(this.screenX[0]+this.sizeMultiplier*(obj.x[0]-this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y[0]-this.y[0]), this.sizeMultiplier*obj.dimensions[0], this.sizeMultiplier*obj.dimensions[1], color);
+                }
+                else{
+                    gameArea.ctx.strokeStyle = color;
+                    gameArea.ctx.rect(this.screenX[0]+this.sizeMultiplier*(obj.x[0]-this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y[0]-this.y[0]), this.sizeMultiplier*obj.dimensions[0], this.sizeMultiplier*obj.dimensions[1], color);
+                    gameArea.ctx.stroke();
+                }
+            gameArea.ctx.restore();
         }
     }
-    this.drawCircles = function(){
-        len = toDraw.length;
-        for(var i = 0; i < len; i++){
-            var obj = toDraw[i];
-            if(this.onScreen(obj.x-obj.radius, obj.y-obj.radius, obj.radius*2, obj.radius*2)){
-                gameArea.ctx.save();
-                    gameArea.ctx.beginPath();
-                    gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
-                    gameArea.ctx.clip();
-
-                    gameArea.ctx.beginPath();
-                    gameArea.ctx.fillStyle=color;
-                    gameArea.ctx.arc(this.screenX[0]+this.sizeMultiplier*(obj.x - this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y - this.y[0]), this.sizeMultiplier*obj.radius, 0, 2*Math.PI);
-                    gameArea.ctx.fill();
-                gameArea.ctx.restore();
+    this.drawCircles = function(obj){
+        if(this.onScreen(obj.x[0]-obj.radius, obj.y[0]-obj.radius, obj.radius*2, obj.radius*2)){
+            if(obj.color){
+                color = obj.color;
             }
+            gameArea.ctx.save();
+                gameArea.ctx.beginPath();
+                gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
+                gameArea.ctx.clip();
+
+                gameArea.ctx.beginPath();
+                gameArea.ctx.fillStyle=color;
+                gameArea.ctx.arc(this.screenX[0]+this.sizeMultiplier*(obj.x[0] - this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y[0] - this.y[0]), this.sizeMultiplier*obj.radius, 0, 2*Math.PI);
+                gameArea.ctx.fill();
+            gameArea.ctx.restore();
         }
     }
-    this.drawLine = function(startx, starty, endx, endy, color="black"){
+    this.drawLine = function(startx, starty, endx, endy, color="black"){ //To Convert
         if(this.onScreen(startx, starty, endx-startx, endy-starty)){
             gameArea.ctx.save();
                 gameArea.ctx.beginPath();
@@ -157,7 +161,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
                 gameArea.ctx.stroke();
             gameArea.ctx.restore();
         }
-    }
+    } //To Convert
     this.drawText = function(x, y, text, color="black", textAlign="center"){ //Too much work to find width and height of text based on number of letters and font and everything. Not going to use this function too much, so it shouldn't matter if it's slightly inefficient
         gameArea.ctx.save();
             gameArea.ctx.beginPath();
@@ -172,7 +176,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
     this.overlayLine = function(startx, starty, endx, endy, color="black"){
         
     }
-    this.overlayRect = function(x, y, width, height, options){
+    this.overlayRect = function(x, y, width, height, options){ //To Convert
         color = "black";
         fill = false;
         if(options.color){
