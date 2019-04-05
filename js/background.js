@@ -17,23 +17,23 @@ function cloud(x, y, options){
         var radius = Math.round((0.2+Math.random())*this.dimensions[1]);
         this.circleCoords.push({x: [this.x[0]+x], y: [this.y[0]+y], radius: radius, color: "white", shape: "circle"})
     }
-
     this.loop = function(){
         this.updatePos();
         for(var i = 0; i < this.circleCount; i++){
             toDraw.push(this.circleCoords[i]);
-            console.log(this.circleCoords[i])
         }
     }
     this.updatePos = function(){
-        this.x = derivativeIncrements(this.x);
-        this.y = derivativeIncrements(this.y);
+        for(var i = 0; i < this.circleCount; i++){
+            this.circleCoords[i].x[0] += this.x[1];
+            this.circleCoords[i].y[0] += this.y[1];
+        }
     }
 }
 function spawnClouds(){
     for(var i = 0; i < 10; i++){
         var x = -5000+1500*i*(0.5+Math.random()/4);
         var y = Math.round(-200+300*(Math.random()-0.5));
-        backgroundElements.push(new cloud([x], [y], {}));
+        backgroundElements.push(new cloud([x, Math.random()], [y, 0], {}));
     }
 }

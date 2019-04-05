@@ -87,6 +87,9 @@ function cameraConstructor(number, x=[0], y=[0], options){
                 case "circle":
                     this.drawCircles(obj);
                     break;
+                case "text":
+                    this.drawText(obj);
+                    break;
                 default:
                     console.log("Error: toDraw[" + i + "] does not have a defined shape.");
                     break;
@@ -162,7 +165,23 @@ function cameraConstructor(number, x=[0], y=[0], options){
             gameArea.ctx.restore();
         }
     } //To Convert
-    this.drawText = function(x, y, text, color="black", textAlign="center"){ //Too much work to find width and height of text based on number of letters and font and everything. Not going to use this function too much, so it shouldn't matter if it's slightly inefficient
+    this.drawText = function(obj){ //Too much work to find width and height of text based on number of letters and font and everything. Not going to use this function too much, so it shouldn't matter if it's slightly inefficient
+        var text = "Filler Text";
+        var textSize = 16;
+        var color = "black";
+        var textAlign = "center";
+        if(obj.text){
+            text = obj.text;
+        }
+        if(obj.textSize){
+            textSize = obj.textSize;
+        }
+        if(obj.color){
+            color = obj.textAlign;
+        }
+        if(obj.textAlign){
+            textAlign = obj.textAlign;
+        }
         gameArea.ctx.save();
             gameArea.ctx.beginPath();
             gameArea.ctx.rect(this.screenX[0], this.screenY[0], this.dimensions[0], this.dimensions[1]);
@@ -170,7 +189,8 @@ function cameraConstructor(number, x=[0], y=[0], options){
 
             gameArea.ctx.fillStyle = color;
             gameArea.ctx.textAlign = textAlign;
-            gameArea.ctx.fillText(text, this.screenX[0]+this.sizeMultiplier*(x - this.x[0]), this.screenY[0]+this.sizeMultiplier*(y - this.y[0])); 
+            gameArea.ctx.font = this.sizeMultiplier*textSize + "px Arial";
+            gameArea.ctx.fillText(text, this.screenX[0]+this.sizeMultiplier*(obj.x - this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y - this.y[0])); 
         gameArea.ctx.restore();
     }
     this.overlayLine = function(startx, starty, endx, endy, color="black"){

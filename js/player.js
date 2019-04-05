@@ -88,7 +88,7 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
     }
     this.useKeyboard = function(){
         if(keyMap[this.controls[0]] && this.standingOnFriction[0]){
-            this.yComponents[2].push(-10);
+            this.yComponents[2].push(-15);
         }
         if(keyMap[this.controls[1]] && sumArray(this.xComponents[1]) > -5){
             this.xComponents[2].push(-1);
@@ -105,7 +105,7 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
         }
     }
     this.updatePos = function(){
-        this.yComponents[2].push(0.3); //Gravity
+        this.yComponents[2].push(0.6); //Gravity
         this.friction();
         for(var i = this.xComponents.length-1; i >= 1; i--){
             this.xComponents[i-1][0] += sumArray(this.xComponents[i]);

@@ -79,12 +79,22 @@ function collisionCheck(entity){
     for(var i = 0; i < len; i++){
         var obj = collision[i];
         if(entity.shape == "rectangle" && "rectangle" == obj.shape){
+            // var currentConflictX = (entity.x[0]-entity.x[1])+entity.dimensions[0] > (obj.x[0]-obj.x[1]) && (entity.x[0]-entity.x[1]) < (obj.x[0]-obj.x[1])+obj.dimensions[0];
+            // var futureConflictX = entity.x[0]+entity.dimensions[0] > obj.x[0] && entity.x[0] < obj.x[0]+obj.dimensions[0];
+            // var currentConflictY = (entity.y[0]-entity.y[1])+entity.dimensions[1] > (obj.y[0]-obj.y[1]) && (entity.y[0]-entity.y[1]) < (obj.y[0]-obj.y[1])+obj.dimensions[1];
+            // var futureConflictY = entity.y[0]+entity.dimensions[1] > obj.y[0] && entity.y[0] < obj.y[0]+obj.dimensions[1];
             var currentConflictX = (entity.x[0]-entity.x[1])+entity.dimensions[0] > (obj.x[0]-obj.x[1]) && (entity.x[0]-entity.x[1]) < (obj.x[0]-obj.x[1])+obj.dimensions[0];
             var futureConflictX = entity.x[0]+entity.dimensions[0] > obj.x[0] && entity.x[0] < obj.x[0]+obj.dimensions[0];
             var currentConflictY = (entity.y[0]-entity.y[1])+entity.dimensions[1] > (obj.y[0]-obj.y[1]) && (entity.y[0]-entity.y[1]) < (obj.y[0]-obj.y[1])+obj.dimensions[1];
             var futureConflictY = entity.y[0]+entity.dimensions[1] > obj.y[0] && entity.y[0] < obj.y[0]+obj.dimensions[1];
+            if(entity.number == 0){
+                obj.color = "black";
+            }
+            if(futureConflictY && futureConflictX){
+                obj.color = "red";
+            }
             if(currentConflictX){
-                if(futureConflictY && !currentConflictY){
+                if(futureConflictY){
                     if(entity.y[1] > 0 || obj.y[1] < 0){
                         entity.y[0] = obj.y[0]-entity.dimensions[1];
                         entity.y = zeroDerivatives(entity.y, "pos");
@@ -129,7 +139,7 @@ function collisionCheck(entity){
                 }
             }
             if(currentConflictY){
-                if(futureConflictX && !currentConflictX){
+                if(futureConflictX){
                     if(entity.x[1] > 0 || obj.x[1] < 0){
                         entity.x[0] = obj.x[0]-entity.dimensions[0];
                         entity.x = zeroDerivatives(entity.x, "pos");

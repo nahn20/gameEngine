@@ -2,20 +2,25 @@
 <html>
     <head>
         <title>Game Engine</title>
-        <meta charset="UTF-8">
         <script src="js/main.js"></script>
         <script src="js/camera.js"></script>
         <script src="js/player.js"></script>
         <script src="js/supportFunctions.js"></script>
         <script src="js/collisionBlocks.js"></script>
         <script src="js/background.js"></script>
+        <script src="js/textMapLoader.js"></script>
+
+        <script src="maps/worldFileTest.js"></script>
         <style>
             canvas{
                 background: skyblue;
             }
+            body{
+                margin: 0;
+            }
         </style>
     </head>
-    <body onload="startGame()">
-        <canvas width=1200 height=600 id="canvas"></canvas>
+    <body onload="startGame()" onresize="resize()">
+        <canvas width=941 height=732 id="canvas"></canvas>
     </body>
 </html>
