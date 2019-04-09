@@ -15,9 +15,12 @@ function blockConstructor(x=[0, 0], y=[0, 0], dimensions=[10, 10], options){
     this.toDeleteFromBlocks = false;
     this.collision = true;
     this.frictionCoefficient = 3;
+    this.resetToColor = true;
+    this.accelerator = [0, 0]; //Gives things velocity. Note: only works on player
     if(options.color){
         this.color = options.color;
     }
+    this.originalColor = this.color;
     if(options.fill){
         this.fill = options.fill;
     }
@@ -27,6 +30,12 @@ function blockConstructor(x=[0, 0], y=[0, 0], dimensions=[10, 10], options){
     if(options.frictionCoefficient){
         this.frictionCoefficient = options.frictionCoefficient;
     }
+    if(options.resetToColor){
+        this.resetToColor = options.resetToColor;
+    }
+    if(options.accelerator){
+        this.accelerator = options.accelerator;
+    }
     addToBlocks(this);
     if(this.collision){
         addToCollision(this);
@@ -34,6 +43,9 @@ function blockConstructor(x=[0, 0], y=[0, 0], dimensions=[10, 10], options){
     this.loop = function(){
         this.updatePos();
         toDraw.push(this);
+        if(this.resetToColor){
+            this.color = this.originalColor; //Needs to come after toDraw so it can be updated if need be
+        }
     }
     this.updatePos = function(){
         this.x = derivativeIncrements(this.x);

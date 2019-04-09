@@ -71,6 +71,7 @@ function largestNumOfArray(array){
     }
     return num;
 }
+//Issues with jumping into vertical wall with slight x velocity. Collides with future x as expected, but since x[1] > 0, it teleports player to left side of block. 
 function collisionCheck(entity){
     if(entity.standingOnFriction){
         entity.standingOnFriction = [];
@@ -84,14 +85,19 @@ function collisionCheck(entity){
             // var currentConflictY = (entity.y[0]-entity.y[1])+entity.dimensions[1] > (obj.y[0]-obj.y[1]) && (entity.y[0]-entity.y[1]) < (obj.y[0]-obj.y[1])+obj.dimensions[1];
             // var futureConflictY = entity.y[0]+entity.dimensions[1] > obj.y[0] && entity.y[0] < obj.y[0]+obj.dimensions[1];
             var currentConflictX = (entity.x[0]-entity.x[1])+entity.dimensions[0] > (obj.x[0]-obj.x[1]) && (entity.x[0]-entity.x[1]) < (obj.x[0]-obj.x[1])+obj.dimensions[0];
-            var futureConflictX = entity.x[0]+entity.dimensions[0] > obj.x[0] && entity.x[0] < obj.x[0]+obj.dimensions[0];
+            var futureConflictX = entity.x[0]+entity.dimensions[0] >= obj.x[0] && entity.x[0] <= obj.x[0]+obj.dimensions[0];
             var currentConflictY = (entity.y[0]-entity.y[1])+entity.dimensions[1] > (obj.y[0]-obj.y[1]) && (entity.y[0]-entity.y[1]) < (obj.y[0]-obj.y[1])+obj.dimensions[1];
-            var futureConflictY = entity.y[0]+entity.dimensions[1] > obj.y[0] && entity.y[0] < obj.y[0]+obj.dimensions[1];
-            if(entity.number == 0){
-                obj.color = "black";
-            }
-            if(futureConflictY && futureConflictX){
-                obj.color = "red";
+            var futureConflictY = entity.y[0]+entity.dimensions[1] >= obj.y[0] && entity.y[0] <= obj.y[0]+obj.dimensions[1];
+            if(entity.colorSpread == 1 || entity.colorSpread == 2 || entity.colorSpread == 3){
+                if(futureConflictY && currentConflictX && entity.colorSpread == 1){
+                    obj.color = entity.color;
+                }
+                if(futureConflictX && currentConflictY && entity.colorSpread == 2){
+                    obj.color = entity.color;
+                }
+                if(futureConflictX && futureConflictY && entity.colorSpread == 3){
+                    obj.color = entity.color;
+                }
             }
             if(currentConflictX){
                 if(futureConflictY){
@@ -100,9 +106,13 @@ function collisionCheck(entity){
                         entity.y = zeroDerivatives(entity.y, "pos");
                         if(entity.yComponents){
                             entity.yComponents = zeroDerivatives0thElement(entity.yComponents, "pos");
+                            entity.yComponents[2].push(obj.accelerator[1]);
                         }
-                        if(entity.xComponents && obj.x[1] != 0){
-                            entity.xComponents[2].push((obj.frictionCoefficient/10)*obj.x[1]); //Basically undoes friction
+                        if(entity.xComponents){
+                            entity.xComponents[2].push(obj.accelerator[0]);
+                            if(obj.x[1] != 0){
+                                entity.xComponents[2].push((obj.frictionCoefficient/10)*obj.x[1]); //Basically undoes friction
+                            }
                         }
                         entity.y = unDerivativeIncrement(entity.y);
                         entity.standingOnFriction.push(obj.frictionCoefficient);
@@ -138,7 +148,7 @@ function collisionCheck(entity){
                     }
                 }
             }
-            if(currentConflictY){
+            else if(currentConflictY){
                 if(futureConflictX){
                     if(entity.x[1] > 0 || obj.x[1] < 0){
                         entity.x[0] = obj.x[0]-entity.dimensions[0];

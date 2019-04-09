@@ -10,8 +10,9 @@ function loadMap(worldFile){
                 var yPos = worldFile.startY+140 - worldFile.blockSize*worldFile.height + y*worldFile.blockSize;
                 var width = 1;
                 var height = 1;
-                if(key == "x" || key == "o"){
+                if(key == "x" || key == "o" || key == "w" || key == ">" || key == "<"){
                     var blockColor = "black";
+                    var accelerator = [0, 0]
                     switch(key){
                         case "x":
                             blockColor = "black";
@@ -19,6 +20,19 @@ function loadMap(worldFile){
                         case "o":
                             blockColor = "#654321";
                             break;
+                        case "w":
+                            blockColor = "white";
+                            accelerator = [0, -11];
+                            break;
+                        case ">":
+                            blockColor = "green";
+                            accelerator = [5, 0];
+                            break;
+                        case "<":
+                            blockColor = "yellow"
+                            accelerator = [-5, 0];
+                            break;
+
                     }
                     var miniX = x;
 
@@ -27,7 +41,7 @@ function loadMap(worldFile){
                         width++;
                     }*/
                     //permaToDraw.push({x: xPos+worldFile.blockSize, y: yPos, text: "Height: " + height, shape: "text"});
-                    block.push(new blockConstructor([xPos, 0], [yPos, 0], [worldFile.blockSize*width, worldFile.blockSize*height], {color: blockColor}));
+                    block.push(new blockConstructor([xPos, 0], [yPos, 0], [worldFile.blockSize*width, worldFile.blockSize*height], {color: blockColor, accelerator: accelerator}));
                 }
                 else if(key == "q"){
                     var nextKey = worldFile.map.charAt(x+1 + y*worldFile.width);

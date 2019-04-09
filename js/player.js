@@ -11,6 +11,7 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
     this.shape = "rectangle";
     this.standingOnFriction = [];
     this.animationState = 0;
+    this.colorSpread = 0; //0 for no color spread, 1 for vertical spread, 2 for horizontal spread, 3 for both spread
     if(options.dimensions){
         this.dimensions = options.dimensions;
     }
@@ -19,6 +20,9 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
     }
     if(options.color){
         this.color = options.color;
+    }
+    if(options.colorSpread){
+        this.colorSpread = options.colorSpread;
     }
     for(var i = 0; i < 3; i++){
         if(!this.x[i]){
@@ -32,22 +36,22 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
         this.useKeyboard();
         this.updatePos();
         collisionCheck(this); //updatePos must come before collisionCheck
-        if(this.standingOnFriction[0]){
-            if(this.number == 1){
-                this.color = "darkblue"
-            }
-            if(this.number == 0){
-                this.color = "darkred"
-            }
-        }
-        else{
-            if(this.number == 1){
-                this.color = "blue"
-            }
-            if(this.number == 0){
-                this.color = "red"
-            }
-        }
+        // if(this.standingOnFriction[0]){ //Changes color when standing on ground
+        //     if(this.number == 1){
+        //         this.color = "darkblue"
+        //     }
+        //     if(this.number == 0){
+        //         this.color = "darkred"
+        //     }
+        // }
+        // else{
+        //     if(this.number == 1){
+        //         this.color = "blue"
+        //     }
+        //     if(this.number == 0){
+        //         this.color = "red"
+        //     }
+        // }
         this.draw();
     }
     this.draw = function(){

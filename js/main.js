@@ -19,10 +19,10 @@ var gameArea = {
 }
 function startGame(){
     gameArea.init();
-    gameArea.tick = setInterval(loop, 20);
+    gameArea.tick = setInterval(loop, 10);
     gameArea.animationTick = setInterval(updateAnimations, 400);
-    player[0] = new playerConstructor(0, x=[20], y=[30], {dimensions: [20, 50], color: "red"});
-    player[1] = new playerConstructor(1, x=[50], y=[30], {dimensions: [40, 80], color: "blue", controls: [73, 74, 75, 76]});
+    player[0] = new playerConstructor(0, x=[20], y=[30], {dimensions: [20, 50], color: "red", colorSpread: 3});
+    player[1] = new playerConstructor(1, x=[50], y=[30], {dimensions: [40, 80], color: "blue", controls: [73, 74, 75, 76], colorSpread: 3});
     createCameras();
     loadMap(testMap)
     spawnClouds();
@@ -34,6 +34,12 @@ function createCameras(){
     camera[3] = new cameraConstructor(3, x=[0], y=[0], {screenX: [gameArea.dimensions[0]/2], screenY: [gameArea.dimensions[1]/2], dimensions: [gameArea.dimensions[0]/2, gameArea.dimensions[1]/2], sizeMultiplier: 0.8});
     camera[4] = new cameraConstructor(4, x=[0], y=[-450], {screenX: [(5/12)*gameArea.dimensions[0], 0], screenY: [(5/12)*gameArea.dimensions[1], 0], dimensions: [gameArea.dimensions[0]/6, gameArea.dimensions[1]/6], sizeMultiplier: 0.1, bounce: true});
 }
+// function createCameras(){ //Testing cameras
+//     camera[0] = new cameraConstructor(0, x=[0], y=[0], {dimensions: [gameArea.dimensions[0], gameArea.dimensions[1]/2], following: 1});
+//     camera[1] = new cameraConstructor(1, x=[0], y=[435], { screenX: [0], screenY: [gameArea.dimensions[1] / 2], dimensions: [gameArea.dimensions[0] / 2, gameArea.dimensions[1] / 2], sizeMultiplier: 3.75});
+//     camera[2] = new cameraConstructor(2, x=[0], y=[0], {screenX: [gameArea.dimensions[0]/2], screenY: [gameArea.dimensions[1]/2], dimensions: [gameArea.dimensions[0]/2, gameArea.dimensions[1]/2], sizeMultiplier: 1});
+//     camera[3] = new cameraConstructor(3, x=[0], y=[-450], {screenX: [(10/12)*gameArea.dimensions[0], 0], screenY: [(10/12)*gameArea.dimensions[1], 0], dimensions: [gameArea.dimensions[0]/6, gameArea.dimensions[1]/6], sizeMultiplier: 0.1, bounce: true});
+// }
 function loop(){
     toDraw = [];
     gameArea.ctx.clearRect(0, 0, gameArea.dimensions[0], gameArea.dimensions[1]);
@@ -44,13 +50,13 @@ function loop(){
     for(var i = 0; i < permaToDraw.length; i++){
         toDraw.push(permaToDraw[i]);
     }
-    //toDraw.push({x: 0, y: 100, text: "Average Tick: " + Math.round(10000*gameArea.tickCounter/((new Date()).getTime()-gameArea.startTime))/10000, shape: "text"});
-    for(var i = 0; i < player.length; i++){
-        player[i].loop();
-    }
+    toDraw.push({x: 0, y: 100, text: "Average Tick: " + Math.round(1000000*gameArea.tickCounter/((new Date()).getTime()-gameArea.startTime))/1000000, shape: "text"});
     var len = block.length;
     for(var i = 0; i < len; i++){
         block[i].loop();
+    }
+    for(var i = 0; i < player.length; i++){
+        player[i].loop();
     }
     for(var i = 0; i < camera.length; i++){ //Needs to go last for clean camera stuff
         camera[i].loop();
