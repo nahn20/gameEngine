@@ -1,10 +1,3 @@
-// block[0] = new blockConstructor([0, 0], [100, 0], [200, 1], {color: "black"});
-// block[1] = new blockConstructor([200, 0], [100, 0], [200, 1], {color: "blue", frictionCoefficient: 0.1});
-// block[2] = new blockConstructor([400, 0], [22, 0], [20, 80], {color: "black"});
-// block[3] = new blockConstructor([-3000, 0], [300, 0], [6000, 20], {color: "green"});
-// block[4] = new blockConstructor([-3000, 0], [320, 0], [6000, 180], {color: "#654321"});
-// block[5] = new blockConstructor([0, 0], [-20, 0], [600, 1], {color: "black"});
-// block[6] = new blockConstructor([100, -3], [200, 0], [600, 10], {color: "blue", frictionCoefficient: 0.1});
 function blockConstructor(x=[0, 0], y=[0, 0], dimensions=[10, 10], options){
     this.x = x;
     this.y = y;
@@ -17,6 +10,7 @@ function blockConstructor(x=[0, 0], y=[0, 0], dimensions=[10, 10], options){
     this.frictionCoefficient = 3;
     this.resetToColor = true;
     this.accelerator = [0, 0]; //Gives things velocity. Note: only works on player
+    this.doKill = false;
     if(options.color){
         this.color = options.color;
     }
@@ -35,6 +29,9 @@ function blockConstructor(x=[0, 0], y=[0, 0], dimensions=[10, 10], options){
     }
     if(options.accelerator){
         this.accelerator = options.accelerator;
+    }
+    if(options.doKill){
+        this.doKill = options.doKill;
     }
     addToBlocks(this);
     if(this.collision){

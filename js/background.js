@@ -30,6 +30,25 @@ function cloud(x, y, options){
         }
     }
 }
+function fakeBlock(x=[0, 0], y=[0, 0], dimensions=[10, 10], options){
+    this.x = x;
+    this.y = y;
+    this.dimensions = dimensions;
+    this.shape = "rectangle";
+    this.fill = true;
+    this.color = "black";
+    if(options.color){
+        this.color = options.color;
+    }
+    this.loop = function(){
+        this.updatePos();
+        toDraw.push(this);
+    }
+    this.updatePos = function(){
+        derivativeIncrements(this.x);
+        derivativeIncrements(this.y);
+    }
+}
 function spawnClouds(){
     for(var i = 0; i < 10; i++){
         var x = -5000+1500*i*(0.5+Math.random()/4);

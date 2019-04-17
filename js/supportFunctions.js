@@ -80,10 +80,6 @@ function collisionCheck(entity){
     for(var i = 0; i < len; i++){
         var obj = collision[i];
         if(entity.shape == "rectangle" && "rectangle" == obj.shape){
-            // var currentConflictX = (entity.x[0]-entity.x[1])+entity.dimensions[0] > (obj.x[0]-obj.x[1]) && (entity.x[0]-entity.x[1]) < (obj.x[0]-obj.x[1])+obj.dimensions[0];
-            // var futureConflictX = entity.x[0]+entity.dimensions[0] > obj.x[0] && entity.x[0] < obj.x[0]+obj.dimensions[0];
-            // var currentConflictY = (entity.y[0]-entity.y[1])+entity.dimensions[1] > (obj.y[0]-obj.y[1]) && (entity.y[0]-entity.y[1]) < (obj.y[0]-obj.y[1])+obj.dimensions[1];
-            // var futureConflictY = entity.y[0]+entity.dimensions[1] > obj.y[0] && entity.y[0] < obj.y[0]+obj.dimensions[1];
             var currentConflictX = (entity.x[0]-entity.x[1])+entity.dimensions[0] > (obj.x[0]-obj.x[1]) && (entity.x[0]-entity.x[1]) < (obj.x[0]-obj.x[1])+obj.dimensions[0];
             var futureConflictX = entity.x[0]+entity.dimensions[0] >= obj.x[0] && entity.x[0] <= obj.x[0]+obj.dimensions[0];
             var currentConflictY = (entity.y[0]-entity.y[1])+entity.dimensions[1] > (obj.y[0]-obj.y[1]) && (entity.y[0]-entity.y[1]) < (obj.y[0]-obj.y[1])+obj.dimensions[1];
@@ -103,16 +99,28 @@ function collisionCheck(entity){
                 if(futureConflictY){
                     if(entity.y[1] > 0 || obj.y[1] < 0){
                         entity.y[0] = obj.y[0]-entity.dimensions[1];
+                        if(entity.slimey){
+                            entity.yComponents[2].push(-entity.y[1]/2);
+                            entity.dimensions[1] -= entity.y[1]/3;
+                            entity.y[0] += entity.y[1]/3;
+                        }
                         entity.y = zeroDerivatives(entity.y, "pos");
                         if(entity.yComponents){
                             entity.yComponents = zeroDerivatives0thElement(entity.yComponents, "pos");
-                            entity.yComponents[2].push(obj.accelerator[1]);
+                            if(obj.accelerator){
+                                entity.yComponents[2].push(obj.accelerator[1]);
+                            }
                         }
                         if(entity.xComponents){
-                            entity.xComponents[2].push(obj.accelerator[0]);
+                            if(obj.accelerator){
+                                entity.xComponents[2].push(obj.accelerator[0]);
+                            }
                             if(obj.x[1] != 0){
                                 entity.xComponents[2].push((obj.frictionCoefficient/10)*obj.x[1]); //Basically undoes friction
                             }
+                        }
+                        if(obj.doKill){
+                            entity.die();
                         }
                         entity.y = unDerivativeIncrement(entity.y);
                         entity.standingOnFriction.push(obj.frictionCoefficient);

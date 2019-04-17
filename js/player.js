@@ -1,5 +1,5 @@
-function playerConstructor(number, x=[0, 0], y=[0, 0], options){
-    this.number = number;
+function playerConstructor(playerNumber, x=[0, 0], y=[0, 0], options){
+    this.playerNumber = playerNumber;
     this.x = x;
     this.y = y;
     this.xComponents = [[0], [0], [0]];
@@ -7,14 +7,17 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
     this.dimensions = [16, 32];
     this.controls = [87, 65, 83, 68];
     this.color = "black";
+    this.spawnpoint = [0, 0];
     this.fill = true;
     this.shape = "rectangle";
     this.standingOnFriction = [];
     this.animationState = 0;
     this.colorSpread = 0; //0 for no color spread, 1 for vertical spread, 2 for horizontal spread, 3 for both spread
+    this.slimey = false;
     if(options.dimensions){
         this.dimensions = options.dimensions;
     }
+    this.originalDimensions = [this.dimensions[0], this.dimensions[1]];
     if(options.controls){
         this.controls = options.controls;
     }
@@ -23,6 +26,9 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
     }
     if(options.colorSpread){
         this.colorSpread = options.colorSpread;
+    }
+    if(options.slimey){
+        this.slimey = options.slimey;
     }
     for(var i = 0; i < 3; i++){
         if(!this.x[i]){
@@ -36,22 +42,6 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
         this.useKeyboard();
         this.updatePos();
         collisionCheck(this); //updatePos must come before collisionCheck
-        // if(this.standingOnFriction[0]){ //Changes color when standing on ground
-        //     if(this.number == 1){
-        //         this.color = "darkblue"
-        //     }
-        //     if(this.number == 0){
-        //         this.color = "darkred"
-        //     }
-        // }
-        // else{
-        //     if(this.number == 1){
-        //         this.color = "blue"
-        //     }
-        //     if(this.number == 0){
-        //         this.color = "red"
-        //     }
-        // }
         this.draw();
     }
     this.draw = function(){
@@ -132,5 +122,14 @@ function playerConstructor(number, x=[0, 0], y=[0, 0], options){
             this.yComponents[i] = [temp];
         }
         this.yComponents[0] = [0];
+
+        this.dimensions[0] += (this.originalDimensions[0]-this.dimensions[0])/8;
+        this.dimensions[1] += (this.originalDimensions[1]-this.dimensions[1])/8;
+    }
+    this.die = function(){
+        this.x = [this.spawnpoint[0]];
+        this.y = [this.spawnpoint[1]];
+        this.xComponents = [[0], [0], [0]];
+        this.yComponents = [[0], [0], [0]];
     }
 }

@@ -10,9 +10,11 @@ function loadMap(worldFile){
                 var yPos = worldFile.startY+140 - worldFile.blockSize*worldFile.height + y*worldFile.blockSize;
                 var width = 1;
                 var height = 1;
-                if(key == "x" || key == "o" || key == "w" || key == ">" || key == "<"){
+                if(key == "x" || key == "o" || key == "w" || key == "W" || key == ">" || key == "<" || key == "u" || key == "d"){
                     var blockColor = "black";
                     var accelerator = [0, 0]
+                    var frictionCoefficient = 3;
+                    var doKill = false;
                     switch(key){
                         case "x":
                             blockColor = "black";
@@ -21,37 +23,54 @@ function loadMap(worldFile){
                             blockColor = "#654321";
                             break;
                         case "w":
-                            blockColor = "white";
+                            blockColor = "yellow";
                             accelerator = [0, -11];
+                            frictionCoefficient = 0.1;
+                            break;
+                        case "W":
+                            blockColor = "orange";
+                            accelerator = [0, -30];
+                            frictionCoefficient = .1;
                             break;
                         case ">":
                             blockColor = "green";
                             accelerator = [5, 0];
                             break;
                         case "<":
-                            blockColor = "yellow"
+                            blockColor = "purple"
                             accelerator = [-5, 0];
                             break;
-
+                        case "u":
+                            blockColor = "white";
+                            frictionCoefficient = 0.1;
+                            break;
+                        case "d":
+                            blockColor = "red";
+                            doKill = true;
+                            break;
                     }
                     var miniX = x;
 
-                    /*while(worldFile.map.charAt(x+1+y*worldFile.width) == key){
+                    while(worldFile.map.charAt(x+1+y*worldFile.width) == key){
                         x++;
                         width++;
-                    }*/
+                    }
                     //permaToDraw.push({x: xPos+worldFile.blockSize, y: yPos, text: "Height: " + height, shape: "text"});
-                    block.push(new blockConstructor([xPos, 0], [yPos, 0], [worldFile.blockSize*width, worldFile.blockSize*height], {color: blockColor, accelerator: accelerator}));
+                    block.push(new blockConstructor([xPos, 0], [yPos, 0], [worldFile.blockSize*width, worldFile.blockSize*height], {color: blockColor, accelerator: accelerator, frictionCoefficient: frictionCoefficient, doKill: doKill}));
+                }
+                else if(key == "-"){
+                    backgroundElements.push(new fakeBlock([xPos, 0], [yPos, 0], [worldFile.blockSize*width, worldFile.blockSize*height], {color: "red"}));
                 }
                 else if(key == "q"){
                     var nextKey = worldFile.map.charAt(x+1 + y*worldFile.width);
-                    if(nextKey == 1){
-                        player[0].x[0] = xPos; //Fix position things
-                        player[0].y[0] = yPos - player[0].dimensions[1];
+                    var playNo = nextKey-1;
+                    if(!isNaN(nextKey) && player[playNo]){
+                        player[playNo].x[0] = xPos; //Fix position things
+                        player[playNo].y[0] = yPos - player[playNo].dimensions[1];
+                        player[playNo].spawnpoint = [player[playNo].x[0], player[playNo].y[0]];
                     }
-                    if(nextKey == 2){
-                        player[1].x[0] = xPos;
-                        player[1].y[0] = yPos - player[1].dimensions[1];
+                    else{
+                        console.log("q used incorrectly! Please add player number")
                     }
                 }
                 else if(key == "n"){
