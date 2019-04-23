@@ -99,10 +99,9 @@ function collisionCheck(entity){
                 if(futureConflictY){
                     if(entity.y[1] > 0 || obj.y[1] < 0){
                         entity.y[0] = obj.y[0]-entity.dimensions[1];
-                        if(entity.slimey){
+                        if(entity.slimey && entity.y[1] > 0.6){
                             entity.yComponents[2].push(-entity.y[1]/2);
                             entity.dimensions[1] -= entity.y[1]/3;
-                            entity.y[0] += entity.y[1]/3;
                         }
                         entity.y = zeroDerivatives(entity.y, "pos");
                         if(entity.yComponents){

@@ -7,6 +7,7 @@ function playerConstructor(playerNumber, x=[0, 0], y=[0, 0], options){
     this.dimensions = [16, 32];
     this.controls = [87, 65, 83, 68];
     this.color = "black";
+    this.dead = false;
     this.spawnpoint = [0, 0];
     this.fill = true;
     this.shape = "rectangle";
@@ -40,7 +41,9 @@ function playerConstructor(playerNumber, x=[0, 0], y=[0, 0], options){
     }
     this.loop = function(){
         this.useKeyboard();
-        this.updatePos();
+        if(!this.dead){
+            this.updatePos();
+        }
         collisionCheck(this); //updatePos must come before collisionCheck
         this.draw();
     }
@@ -50,19 +53,19 @@ function playerConstructor(playerNumber, x=[0, 0], y=[0, 0], options){
         head.y[0] += this.dimensions[0]/2-0.05*this.dimensions[0]*(this.animationState % 2);
         toDraw.push(head);
 
-        if(this.x[1] < -0.1){
+        if(this.x[1] < -0.1 && !this.dead){
             var eye = {x: this.x.slice(0), y: this.y.slice(0), radius: this.dimensions[0]/12, shape: "circle", fill: this.fill, color: "white"};
             eye.x[0] += 0.2*this.dimensions[0];
             eye.y[0] += 0.38*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
             toDraw.push(eye);
         }
-        if(this.x[1] > 0.1){
+        if(this.x[1] > 0.1 && !this.dead){
             var eye = {x: this.x.slice(0), y: this.y.slice(0), radius: this.dimensions[0]/12, shape: "circle", fill: this.fill, color: "white"};
             eye.x[0] += 0.8*this.dimensions[0];
             eye.y[0] += 0.38*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
             toDraw.push(eye);
         }
-        if(this.x[1] > -0.1 && this.x[1] < 0.1){
+        if(this.x[1] > -0.1 && this.x[1] < 0.1 && !this.dead){
             var eye1 = {x: this.x.slice(0), y: this.y.slice(0), radius: this.dimensions[0]/12, shape: "circle", fill: this.fill, color: "white"};
             eye1.x[0] += 0.72*this.dimensions[0];
             eye1.y[0] += 0.38*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
@@ -73,12 +76,25 @@ function playerConstructor(playerNumber, x=[0, 0], y=[0, 0], options){
             eye2.y[0] += 0.38*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
             toDraw.push(eye2);
         }
+        if(this.dead){
+            var eye1 = {x: this.x[0], y: this.y[0], shape: "text", color: "white", text: "x", textSize: 12};
+            eye1.x += 0.72*this.dimensions[0];
+            eye1.y += 0.44*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
+            toDraw.push(eye1);
+
+            var eye2 = {x: this.x[0], y: this.y[0], shape: "text", color: "white", text: "x", textSize: 12};
+            eye2.x += 0.28*this.dimensions[0];
+            eye2.y += 0.44*this.dimensions[0]-0.075*this.dimensions[0]*(this.animationState % 2);
+            toDraw.push(eye2);
+        }
         var body = {x: this.x, y: this.y.slice(0), dimensions: [this.dimensions[0], this.dimensions[1]-this.dimensions[0]], shape: "rectangle", fill: this.fill, color: this.color};
         body.y[0] += this.dimensions[0];
         toDraw.push(body);
     }
     this.updateAnimation = function(){
-        this.animationState++;
+        if(!this.dead){
+            this.animationState++;
+        }
     }
     this.useKeyboard = function(){
         if(keyMap[this.controls[0]] && this.standingOnFriction[0]){
@@ -127,6 +143,13 @@ function playerConstructor(playerNumber, x=[0, 0], y=[0, 0], options){
         this.dimensions[1] += (this.originalDimensions[1]-this.dimensions[1])/8;
     }
     this.die = function(){
+        this.dead = true;
+        setTimeout(function(player){
+            player.respawn();
+        }, 500, this);
+    }
+    this.respawn = function(){
+        this.dead = false;
         this.x = [this.spawnpoint[0]];
         this.y = [this.spawnpoint[1]];
         this.xComponents = [[0], [0], [0]];

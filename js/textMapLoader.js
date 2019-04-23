@@ -41,7 +41,7 @@ function loadMap(worldFile){
                             accelerator = [-5, 0];
                             break;
                         case "u":
-                            blockColor = "white";
+                            blockColor = "#e6ffff";
                             frictionCoefficient = 0.1;
                             break;
                         case "d":

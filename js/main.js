@@ -72,10 +72,10 @@ function createCameras(cameraLoadout){
         camera[2] = new cameraConstructor(3, x=[0], y=[-500], {screenX: [0], screenY: [(19/24)*gameArea.dimensions[1]], dimensions: [gameArea.dimensions[0], (5/24)*gameArea.dimensions[1]], sizeMultiplier: 0.13});
     }
     else if(gameArea.cameraLoadout == 4){ //Good camera for 4 player platformer
-        camera[0] = new cameraConstructor(0, x=[0], y=[0], {screenX: [0], screenY: [0], dimensions: [gameArea.dimensions[0]/2, (19/48)*gameArea.dimensions[1]], following: 1});
-        camera[1] = new cameraConstructor(1, x=[0], y=[0], {screenX: [gameArea.dimensions[0]/2], screenY: [0], dimensions: [gameArea.dimensions[0]/2, (19/48)*gameArea.dimensions[1]], following: 2});
-        camera[2] = new cameraConstructor(2, x=[0], y=[0], {screenX: [0], screenY: [(19/48)*gameArea.dimensions[1]], dimensions: [gameArea.dimensions[0]/2, (19/48)*gameArea.dimensions[1]], following: 3});
-        camera[3] = new cameraConstructor(3, x=[0], y=[0], {screenX: [gameArea.dimensions[0]/2], screenY: [(19/48)*gameArea.dimensions[1]], dimensions: [gameArea.dimensions[0]/2, (19/48)*gameArea.dimensions[1]], following: 4});
+        camera[0] = new cameraConstructor(0, x=[0], y=[0], {screenX: [0], screenY: [0], dimensions: [gameArea.dimensions[0]/2, (19/48)*gameArea.dimensions[1]], following: 1, sizeMultiplier: 0.6});
+        camera[1] = new cameraConstructor(1, x=[0], y=[0], {screenX: [gameArea.dimensions[0]/2], screenY: [0], dimensions: [gameArea.dimensions[0]/2, (19/48)*gameArea.dimensions[1]], following: 2, sizeMultiplier: 0.6});
+        camera[2] = new cameraConstructor(2, x=[0], y=[0], {screenX: [0], screenY: [(19/48)*gameArea.dimensions[1]], dimensions: [gameArea.dimensions[0]/2, (19/48)*gameArea.dimensions[1]], following: 3, sizeMultiplier: 0.6});
+        camera[3] = new cameraConstructor(3, x=[0], y=[0], {screenX: [gameArea.dimensions[0]/2], screenY: [(19/48)*gameArea.dimensions[1]], dimensions: [gameArea.dimensions[0]/2, (19/48)*gameArea.dimensions[1]], following: 4, sizeMultiplier: 0.6});
         camera[4] = new cameraConstructor(4, x=[0], y=[-500], {screenX: [0], screenY: [(19/24)*gameArea.dimensions[1]], dimensions: [gameArea.dimensions[0], (5/24)*gameArea.dimensions[1]], sizeMultiplier: 0.13});
     }
     else{

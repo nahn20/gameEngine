@@ -40,8 +40,8 @@ function cameraConstructor(number, x=[0], y=[0], options){
             }
         }
         else{
-            this.x[0] = player[this.following-1].x[0] - this.dimensions[0]/2;
-            this.y[0] = player[this.following-1].y[0] - this.dimensions[1]/2;
+            this.x[0] = player[this.following-1].x[0] - this.dimensions[0]/(2*this.sizeMultiplier);
+            this.y[0] = player[this.following-1].y[0] - this.dimensions[1]/(2*this.sizeMultiplier);
         }
         this.screenX = derivativeIncrements(this.screenX);
         this.screenY = derivativeIncrements(this.screenY);
@@ -164,7 +164,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
                 gameArea.ctx.stroke();
             gameArea.ctx.restore();
         }
-    } //To Convert
+    }
     this.drawText = function(obj){ //Too much work to find width and height of text based on number of letters and font and everything. Not going to use this function too much, so it shouldn't matter if it's slightly inefficient
         var text = "Filler Text";
         var textSize = 16;
@@ -177,7 +177,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
             textSize = obj.textSize;
         }
         if(obj.color){
-            color = obj.textAlign;
+            color = obj.color;
         }
         if(obj.textAlign){
             textAlign = obj.textAlign;
