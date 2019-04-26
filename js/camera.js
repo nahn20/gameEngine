@@ -150,7 +150,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
             gameArea.ctx.restore();
         }
     }
-    this.drawLine = function(startx, starty, endx, endy, color="black"){ //To Convert
+    this.drawLine = function(startx, starty, endx, endy, color="black"){
         if(this.onScreen(startx, starty, endx-startx, endy-starty)){
             gameArea.ctx.save();
                 gameArea.ctx.beginPath();
@@ -165,7 +165,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
             gameArea.ctx.restore();
         }
     }
-    this.drawText = function(obj){ //Too much work to find width and height of text based on number of letters and font and everything. Not going to use this function too much, so it shouldn't matter if it's slightly inefficient
+    this.drawText = function(obj){
         var text = "Filler Text";
         var textSize = 16;
         var color = "black";
@@ -196,7 +196,7 @@ function cameraConstructor(number, x=[0], y=[0], options){
     this.overlayLine = function(startx, starty, endx, endy, color="black"){
         
     }
-    this.overlayRect = function(x, y, width, height, options){ //To Convert
+    this.overlayRect = function(x, y, width, height, options){
         color = "black";
         fill = false;
         if(options.color){

@@ -95,7 +95,7 @@ function loop(){
     for(var i = 0; i < permaToDraw.length; i++){
         toDraw.push(permaToDraw[i]);
     }
-    toDraw.push({x: 0, y: 100, text: "Average Tick: " + Math.round(1000000*gameArea.tickCounter/((new Date()).getTime()-gameArea.startTime))/1000000, shape: "text"});
+    //toDraw.push({x: 0, y: 100, text: "Average Tick: " + Math.round(1000000*gameArea.tickCounter/((new Date()).getTime()-gameArea.startTime))/1000000, shape: "text"});
     var len = block.length;
     for(var i = 0; i < len; i++){
         block[i].loop();
