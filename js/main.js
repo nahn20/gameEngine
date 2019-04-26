@@ -29,6 +29,14 @@ function startGame(){
     createCameras(4);
     loadMap(platformer)
     spawnClouds();
+    function animLoop(){
+        requestAnimationFrame(animLoop);
+        gameArea.ctx.clearRect(0, 0, gameArea.dimensions[0], gameArea.dimensions[1]);
+        for(var i = 0; i < camera.length; i++){
+            camera[i].loop();
+        }
+    }
+    animLoop();
 }
 function resetMap(map, cameraLoadout){
     collision = [];
@@ -87,7 +95,6 @@ function createCameras(cameraLoadout){
 }
 function loop(){
     toDraw = [];
-    gameArea.ctx.clearRect(0, 0, gameArea.dimensions[0], gameArea.dimensions[1]);
     for(var i = 0; i < backgroundElements.length; i++){
         backgroundElements[i].loop();
     }
@@ -102,9 +109,6 @@ function loop(){
     }
     for(var i = 0; i < player.length; i++){
         player[i].loop();
-    }
-    for(var i = 0; i < camera.length; i++){ //Needs to go last for clean camera stuff
-        camera[i].loop();
     }
 }
 function updateAnimations(){
