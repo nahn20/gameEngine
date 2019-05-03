@@ -193,9 +193,6 @@ function cameraConstructor(number, x=[0], y=[0], options){
             gameArea.ctx.fillText(text, this.screenX[0]+this.sizeMultiplier*(obj.x - this.x[0]), this.screenY[0]+this.sizeMultiplier*(obj.y - this.y[0])); 
         gameArea.ctx.restore();
     }
-    this.overlayLine = function(startx, starty, endx, endy, color="black"){
-        
-    }
     this.overlayRect = function(x, y, width, height, options){
         color = "black";
         fill = false;
